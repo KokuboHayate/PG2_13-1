@@ -16,9 +16,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = {0};
 	char preKeys[256] = {0};
 
+	//敵
 	Enemy* enemyA = new Enemy({250.0f,150.0f});
 	Enemy* enemyB = new Enemy({500.0f,450.0f});
 
+	//プレイヤー
 	struct Player
 	{
 		Vector2 pos;
@@ -31,6 +33,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		40.0f
 	};
 
+	//弾
 	struct Shot
 	{
 		Vector2 pos;
@@ -48,6 +51,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		};
 	}
 
+	//当たり判定用
 	float distanceX = 0.0f;
 	float distanceY = 0.0f;
 	float distance = 0.0f;
@@ -65,6 +69,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
+		///キー入力///
 		if (keys[DIK_W]) {
 			player.pos.y -= player.speed;
 		}
@@ -82,10 +87,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				Enemy::isAlive = true;
 			}
 		}
-
-		enemyA->Move();
-		enemyB->Move();
-
 		if (preKeys[DIK_SPACE] == 0 && keys[DIK_SPACE] != 0) {
 			for (int i = 0; i < 10; i++) {
 				if (shot[i].isAlive == false) {
@@ -96,6 +97,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 		}
+		//////////////
+		
+		///オブジェクトの動き///
+		enemyA->Move();
+		enemyB->Move();
 
 		for (int i = 0; i < 10; i++) {
 			if (shot[i].isAlive) {
@@ -106,7 +112,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 		}
+		/////////////////////////
 
+		///当たり判定///
 		for (int i = 0; i < 10; i++) {
 			if (shot[i].isAlive) {
 				if (enemyA->isAlive) {
@@ -127,6 +135,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 		}
+		////////////////
 
 
 		///
@@ -137,12 +146,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
+		//敵
 		enemyA->Draw();
 		enemyB->Draw();
 
+		//自機
 		Novice::DrawEllipse(static_cast<int>(player.pos.x), static_cast<int>(player.pos.y),
 			static_cast<int>(player.radius), static_cast<int>(player.radius), 0.0f, GREEN, kFillModeSolid);
 
+		//弾
 		for (int i = 0; i < 10; i++) {
 			if (shot[i].isAlive) {
 				Novice::DrawEllipse(static_cast<int>(shot[i].pos.x), static_cast<int>(shot[i].pos.y),
@@ -150,6 +162,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 		}
 
+		//操作説明
 		Novice::ScreenPrintf(0, 0, "enemyA isAlive = %d", enemyA->isAlive);
 		Novice::ScreenPrintf(0, 20, "enemyB isAlive = %d", enemyB->isAlive);
 		Novice::ScreenPrintf(0, 40, "WASD : player Move");
